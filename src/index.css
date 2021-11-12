@@ -1,0 +1,22 @@
+:root {
+  --board-size: 560px;
+  --columns: 8;
+  --candy-size: calc(var(--board-size) / var(--columns));
+}
+
+.app {
+  display: flex;
+  padding: 30px;
+}
+
+.game {
+  width: var(--board-size);
+  height: var(--board-size);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.game img {
+  width: var(--candy-size);
+  height: var(--candy-size);
+}
