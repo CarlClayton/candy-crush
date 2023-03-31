@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Scoreboard from "./components/Scoreboard";
 import blueCandy from "./images/blue-candy.png";
 import greenCandy from "./images/green-candy.png";
@@ -27,20 +27,28 @@ const randomColor = () => {
 };
 
 const App = () => {
-  const [currentColorArrangement, setCurrentColorArrangement] = useState([]);
+  const [currentColorArrangement, setCurrentColorArrangement] =
+    useState([]);
   const [candyBeingDragged, setCandyBeingDragged] = useState(null);
   const [candyBeingReplaced, setCandyBeingReplaced] = useState(null);
   const [scoreDisplay, setScoreDisplay] = useState(0);
 
-  const checkForColumnOfFour = () => {
+  const checkForColumnOfFour = useCallback(() => {
     for (let i = 0; i <= lastColumn(3); i++) {
-      const columnOfFour = [i, i + width, i + width * 2, i + width * 3];
+      const columnOfFour = [
+        i,
+        i + width,
+        i + width * 2,
+        i + width * 3,
+      ];
       const decidedColor = currentColorArrangement[i];
       const isBlank = currentColorArrangement[i] === blank;
 
       if (
         columnOfFour.every(
-          (candy) => currentColorArrangement[candy] === decidedColor && !isBlank
+          (candy) =>
+            currentColorArrangement[candy] === decidedColor &&
+            !isBlank
         )
       ) {
         setScoreDisplay((score) => score + 4);
@@ -50,9 +58,9 @@ const App = () => {
         return true;
       }
     }
-  };
+  }, [currentColorArrangement]);
 
-  const checkForRowOfFour = () => {
+  const checkForRowOfFour = useCallback(() => {
     for (let i = 0; i <= area; i++) {
       const rowOfFour = [i, i + 1, i + 2, i + 3];
       const decidedColor = currentColorArrangement[i];
@@ -74,17 +82,21 @@ const App = () => {
 
       if (
         rowOfFour.every(
-          (candy) => currentColorArrangement[candy] === decidedColor && !isBlank
+          (candy) =>
+            currentColorArrangement[candy] === decidedColor &&
+            !isBlank
         )
       ) {
         setScoreDisplay((score) => score + 4);
-        rowOfFour.forEach((candy) => (currentColorArrangement[candy] = blank));
+        rowOfFour.forEach(
+          (candy) => (currentColorArrangement[candy] = blank)
+        );
         return true;
       }
     }
-  };
+  }, [currentColorArrangement]);
 
-  const checkForColumnOfThree = () => {
+  const checkForColumnOfThree = useCallback(() => {
     for (let i = 0; i <= lastColumn(2); i++) {
       const columnOfThree = [i, i + width, i + width * 2];
       const decidedColor = currentColorArrangement[i];
@@ -92,7 +104,9 @@ const App = () => {
 
       if (
         columnOfThree.every(
-          (candy) => currentColorArrangement[candy] === decidedColor && !isBlank
+          (candy) =>
+            currentColorArrangement[candy] === decidedColor &&
+            !isBlank
         )
       ) {
         setScoreDisplay((score) => score + 3);
@@ -102,9 +116,9 @@ const App = () => {
         return true;
       }
     }
-  };
+  }, [currentColorArrangement]);
 
-  const checkForRowOfThree = () => {
+  const checkForRowOfThree = useCallback(() => {
     for (let i = 0; i <= area; i++) {
       const rowOfThree = [i, i + 1, i + 2];
       const decidedColor = currentColorArrangement[i];
@@ -126,17 +140,21 @@ const App = () => {
 
       if (
         rowOfThree.every(
-          (candy) => currentColorArrangement[candy] === decidedColor && !isBlank
+          (candy) =>
+            currentColorArrangement[candy] === decidedColor &&
+            !isBlank
         )
       ) {
         setScoreDisplay((score) => score + 3);
-        rowOfThree.forEach((candy) => (currentColorArrangement[candy] = blank));
+        rowOfThree.forEach(
+          (candy) => (currentColorArrangement[candy] = blank)
+        );
         return true;
       }
     }
-  };
+  }, [currentColorArrangement]);
 
-  const moveIntoSpaceBelow = () => {
+  const moveIntoSpaceBelow = useCallback(() => {
     for (let i = 0; i <= area - width - 1; i++) {
       const firstRow = () => {
         const arr = [];
@@ -151,11 +169,12 @@ const App = () => {
         currentColorArrangement[i] = randomColor();
       }
       if (currentColorArrangement[i + width] === blank) {
-        currentColorArrangement[i + width] = currentColorArrangement[i];
+        currentColorArrangement[i + width] =
+          currentColorArrangement[i];
         currentColorArrangement[i] = blank;
       }
     }
-  };
+  }, [currentColorArrangement]);
 
   const dragStart = (e) => {
     setCandyBeingDragged(e.target);
@@ -195,7 +214,10 @@ const App = () => {
     if (
       candyBeingReplacedId &&
       validMove &&
-      (isAColumnOfFour || isARowOfFour || isAColumnOfThree || isARowOfThree)
+      (isAColumnOfFour ||
+        isARowOfFour ||
+        isAColumnOfThree ||
+        isARowOfThree)
     ) {
       setCandyBeingDragged(null);
       setCandyBeingReplaced(null);
